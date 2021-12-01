@@ -18,14 +18,18 @@ class Sweeps(private val sweeps: List<Sweep>) {
     val size: Int = sweeps.size
 
     companion object {
-        fun from(input: List<String>): Sweeps = Sweeps(input.zipWithNext().map { Sweep(it.first, it.second) })
+        fun from(input: List<String>): Sweeps = Sweeps(
+            input.zipWithNext()
+                .map { Pair(it.first.toInt(), it.second.toInt()) }
+                .map { Sweep(it.first, it.second) }
+        )
     }
 
-    fun filter(function: (Sweep) -> Boolean): Sweeps = Sweeps(sweeps.filter(function))
+    fun filter(predicate: (Sweep) -> Boolean): Sweeps = Sweeps(sweeps.filter(predicate))
 }
 
-data class Sweep(private val first: String, private val second: String) {
-    val isIncreasing: Boolean = first <= second
+data class Sweep(private val first: Int, private val second: Int) {
+    val isIncreasing: Boolean = first < second
 }
 
 fun main() {
