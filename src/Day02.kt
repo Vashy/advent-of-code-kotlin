@@ -6,31 +6,70 @@ object Day02 {
         val commands = input
             .map { it.toPair() }
             .map { (name, value) -> transformFrom(name, value) }
-        val submarine = Submarine(commands)
+        val submarine = Submarine.withSimplePosition(commands)
 
         return submarine.positionValue()
     }
 
     fun part2(input: List<String>): Int {
-        return 0
+        val commands = input
+            .map { it.toPair() }
+            .map { (name, value) -> transformFrom(name, value) }
+        val submarine = Submarine.withImprovedPosition(commands)
+
+        return submarine.positionValue()
     }
 }
 
-class Position(private val horizontal: Int = 0, private val depth: Int = 0) {
-    val multiplied: Int = if (horizontal == 0 && depth == 0) 0 else horizontal.orOne() * depth.orOne()
+interface Position {
+    val multiplied: Int
 
-    fun minusDepth(depth: Int) = Position(horizontal, this.depth - depth)
-    fun addDepth(depth: Int): Position = Position(horizontal, this.depth + depth)
-    fun moveForward(horizontal: Int): Position = Position(this.horizontal + horizontal, depth)
+    fun moveUpBy(value: Int): Position
+    fun moveDownBy(value: Int): Position
+    fun moveForwardBy(value: Int): Position
+}
+
+class SimplePosition(private val horizontal: Int = 0, private val depth: Int = 0): Position {
+    override val multiplied: Int = if (horizontal == 0 && depth == 0) 0 else horizontal.orOne() * depth.orOne()
+
+    override fun moveUpBy(value: Int) = SimplePosition(horizontal, depth - value)
+    override fun moveDownBy(value: Int): SimplePosition = SimplePosition(horizontal, depth + value)
+    override fun moveForwardBy(value: Int): SimplePosition = SimplePosition(horizontal + value, depth)
 
     private fun Int.orOne(): Int = if (this == 0) 1 else this
 }
 
-class Submarine(transforms: List<Transform>) {
-    private var position: Position = Position()
+class ImprovedPosition(
+    private val horizontal: Int = 0,
+    private val aim: Int = 0,
+    private val depth: Int = 0
+): Position by SimplePosition(horizontal, depth) {
+    override fun moveUpBy(value: Int): Position {
+        return ImprovedPosition(horizontal, aim - value, depth)
+    }
+
+    override fun moveDownBy(value: Int): Position {
+        return ImprovedPosition(horizontal, aim + value, depth)
+    }
+
+    override fun moveForwardBy(value: Int): Position {
+        return ImprovedPosition(horizontal + value, aim, depth + aim * value)
+    }
+}
+
+class Submarine private constructor(private var position: Position, transformations: List<Transform>) {
+    companion object {
+        fun withSimplePosition(transformations: List<Transform>): Submarine {
+            return Submarine(SimplePosition(), transformations)
+        }
+
+        fun withImprovedPosition(transformations: List<Transform>): Submarine {
+            return Submarine(ImprovedPosition(), transformations)
+        }
+    }
 
     init {
-        transforms.forEach { transform -> position = transform(position) }
+        transformations.forEach { transform -> position = transform(position) }
     }
 
     fun positionValue(): Int = position.multiplied
@@ -45,11 +84,11 @@ fun transformFrom(command: String, value: Int): Transform = when (command) {
     else -> throw IllegalArgumentException("Invalid argument $command")
 }
 
-fun Up(value: Int): Transform = { position -> position.minusDepth(value) }
+fun Up(value: Int): Transform = { position -> position.moveUpBy(value) }
 
-fun Down(value: Int): Transform = { position -> position.addDepth(value) }
+fun Down(value: Int): Transform = { position -> position.moveDownBy(value) }
 
-fun Forward(value: Int): Transform = { position -> position.moveForward(value) }
+fun Forward(value: Int): Transform = { position -> position.moveForwardBy(value) }
 
 private fun String.toPair(): Pair<String, Int> {
     val split = split(" ")

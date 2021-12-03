@@ -7,6 +7,14 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class Day02Test {
+    private val sampleInput: List<String> = listOf(
+                "forward 5",
+                "down 5",
+                "forward 8",
+                "up 3",
+                "down 8",
+                "forward 2")
+
     @Nested
     inner class Part1 {
         @Test
@@ -22,14 +30,7 @@ class Day02Test {
         @Test
         @Ignore
         internal fun `problem sample input`() {
-            val input = listOf(
-                "forward 5",
-                "down 5",
-                "forward 8",
-                "up 3",
-                "down 8",
-                "forward 2"
-            )
+            val input = sampleInput
 
             assertEquals(150, part1(input))
         }
@@ -44,32 +45,26 @@ class Day02Test {
     }
 
     @Nested
-    @Ignore
     inner class Part2 {
         @Test
         internal fun `simple cases`() {
             assertAll(
                 { assertEquals(0, part2(listOf())) },
-                { assertEquals(0, part2(listOf("1"))) },
-                { assertEquals(0, part2(listOf("1", "2"))) },
-                { assertEquals(0, part2(listOf("1", "2", "3"))) },
-                { assertEquals(2, part2(listOf("1", "2", "3", "4", "5"))) },
-                { assertEquals(3, part2(listOf("1", "2", "3", "4", "5", "7"))) }
+                { assertEquals(5, part2(listOf("forward 5"))) },
+                { assertEquals(0, part2(listOf("down 5"))) },
             )
         }
 
         @Test
         internal fun `problem sample input`() {
-            val input = listOf("199", "200", "208", "210", "200", "207", "240", "269", "260", "263")
-
-            assertEquals(5, part2(input))
+            assertEquals(900, part2(sampleInput))
         }
 
         @Test
         internal fun `problem input`() {
-            val input = readInput("Day01")
+            val input = readInput("Day02")
 
-            assertEquals(1597, part2(input))
+            assertEquals(1176514794, part2(input))
         }
     }
 }
