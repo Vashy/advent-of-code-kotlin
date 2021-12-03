@@ -17,7 +17,7 @@ object Day01 {
 }
 
 fun main() {
-    // test if implementation meets criteria from the description, like:
+    // test if implementation meets criteria transformFrom the description, like:
     val testInput = readInput("Day01_test")
     check(part1(testInput) == 7)
 
