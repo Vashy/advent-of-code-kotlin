@@ -28,7 +28,6 @@ class Day02Test {
         }
 
         @Test
-        @Ignore
         internal fun `problem sample input`() {
             val input = sampleInput
 
@@ -36,11 +35,10 @@ class Day02Test {
         }
 
         @Test
-        @Ignore
         internal fun `problem input`() {
-            val input = readInput("Day01")
+            val input = readInput("Day02")
 
-            assertEquals(1553, part1(input))
+            assertEquals(1488669, part1(input))
         }
     }
 

@@ -1,8 +1,10 @@
 import Day03.part1
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import kotlin.test.Ignore
 import kotlin.test.assertEquals
 
+@Ignore
 class Day03Test {
     @Nested
     inner class Part1 {
