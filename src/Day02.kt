@@ -42,7 +42,7 @@ class SimplePosition(private val horizontal: Int = 0, private val depth: Int = 0
 class ImprovedPosition(
     private val horizontal: Int = 0,
     private val aim: Int = 0,
-    private val depth: Int = 0
+    private val depth: Int = 0,
 ): Position by SimplePosition(horizontal, depth) {
     override fun moveUpBy(value: Int): Position {
         return ImprovedPosition(horizontal, aim - value, depth)
